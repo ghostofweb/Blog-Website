@@ -1,4 +1,4 @@
-# Blog 
+# Saffron Stories
 these are the dependencies which im using 
 
 @reduxjs/toolkit
