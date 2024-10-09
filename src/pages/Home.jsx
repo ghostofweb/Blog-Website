@@ -55,16 +55,16 @@ function Home() {
                             Discover a world of amazing stories and insights.
                             Join us to explore a wide range of topics and connect with our community!
                         </p>
-                        <div className="mb-4">
+                        <div className="mb-4 w-full sm:w-auto px-4">
                             <input
                                 type="text"
                                 placeholder="Search for a blog..."
-                                className="border rounded-lg p-2 w-80"
+                                className="border rounded-lg p-2 w-full sm:w-80"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                             />
                             {showSuggestions && (
-                                <div className="absolute z-10 bg-white border rounded-lg w-80 shadow-md mt-1">
+                                <div className="absolute z-10 bg-white border rounded-lg w-full sm:w-80 shadow-md mt-1">
                                     {filteredPosts.map((post) => (
                                         <div
                                             key={post.$id}
@@ -80,11 +80,11 @@ function Home() {
                         <p className="text-md mb-4">
                             To unlock the full experience, please log in or sign up.
                         </p>
-                        <div>
-                            <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600" onClick={() => navigate('/login')}>
+                        <div className="flex flex-col sm:flex-row items-center justify-center">
+                            <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 mb-2 sm:mb-0 sm:mr-2" onClick={() => navigate('/login')}>
                                 Log In
                             </button>
-                            <button className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 ml-2" onClick={() => navigate('/signup')}>
+                            <button className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600" onClick={() => navigate('/signup')}>
                                 Sign Up
                             </button>
                         </div>
@@ -123,7 +123,7 @@ function Home() {
                 </div>
                 <div className='flex flex-wrap'>
                     {filteredPosts.map((post) => (
-                        <div key={post.$id} className='p-2 w-1/4'>
+                        <div key={post.$id} className='p-2 w-full sm:w-1/2 md:w-1/4'>
                             <PostCard {...post} />
                         </div>
                     ))}
