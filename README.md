@@ -1,5 +1,5 @@
 # Saffron Stories
-
+[click here to view website](https://saffron-stories.vercel.app/)
 Saffron Stories is a blog website where users can sign in, create, edit, and delete blogs. Users can also view blogs created by others, fostering a platform for shared stories and ideas.
 
 ## Features
