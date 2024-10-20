@@ -24,9 +24,10 @@ export default function Post() {
                     const fetchedPost = await appwriteService.getPost(slug);
                     if (fetchedPost) {
                         setPost(fetchedPost);
-                        // Fetch author details using userId from post
-                        const author = await authService.getUserById(fetchedPost.userId);
-                        setAuthorName(author.name); // Set the author's name
+                        const user = await authService.getCurrentUser();
+                        if (user) {
+                            setAuthorName(user.name);
+                        }
                     } else {
                         navigate("/");
                     }
@@ -76,7 +77,7 @@ export default function Post() {
                         />
                     </div>
                     <div className="md:w-2/3">
-                        <h1 className="text-3xl font-bold mb-2 text-gray-800">{post.title}</h1>
+                        <h1 className="text-3xl font-bold mb-2 text-gray-800 ">{post.title}</h1>
                         <p className="text-sm text-gray-600 mb-4">
                             Created by: {authorName || 'Unknown User'}
                         </p>
