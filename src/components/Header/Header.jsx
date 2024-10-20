@@ -63,7 +63,19 @@ function Header() {
                 }`}
                 onClick={toggleDarkMode}
               >
-                {isDarkMode ? 'Light Mode' : 'Dark Mode'}
+                {isDarkMode ? (
+                  // Moon SVG icon for Dark Mode
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 inline">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1M12 20v1M4.22 4.22l.707.707M18.36 18.36l.707.707M3 12h1m17 0h1M4.22 19.78l.707-.707M18.36 5.64l.707-.707" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 12a6 6 0 100-12 6 6 0 000 12zm0 0v1a6 6 0 01-6 6h-1a6 6 0 016-6zm0 0v-1a6 6 0 016-6h1a6 6 0 01-6 6z" />
+                  </svg>
+                ) : (
+                  // Sun SVG icon for Light Mode
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 inline">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v1M12 19v1m8.485-8.485l-.707.707M5.514 5.514l-.707.707M20 12h-1m-17 0H2m3.514 3.514l-.707-.707M19.485 5.514l-.707-.707" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3a9 9 0 100 18 9 9 0 000-18z" />
+                  </svg>
+                )}
               </button>
             </li>
           </ul>
