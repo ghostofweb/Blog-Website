@@ -3,20 +3,22 @@ import service from '../appwrite/config';
 import { Link } from "react-router-dom";
 
 function PostCard({ $id, title, featuredImage }) {
-  return (
-    <Link to={`/post/${$id}`}>
-      <div className="w-full bg-gray-100 rounded-xl p-4 shadow-md hover:shadow-lg transition-shadow duration-300">
-        <div className="w-full mb-4">
-          <img
-            src={service.getFilePreview(featuredImage)}
-            alt={title}
-            className="w-full h-40 object-cover rounded-xl"
-          />
-        </div>
-        <h2 className="text-xl font-bold">{title}</h2>
-      </div>
-    </Link>
-  );
+    return (
+        <Link to={`/post/${$id}`} className="transition-transform transform hover:scale-105">
+            <div className="w-full bg-white dark:bg-gray-800 shadow-lg rounded-xl overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div className='w-full flex justify-center mb-4'>
+                    <img 
+                        src={service.getFilePreview(featuredImage)} 
+                        alt={title} 
+                        className='rounded-xl w-full h-48 object-cover transition-transform duration-300 transform hover:scale-110' 
+                    />
+                </div>
+                <div className="p-4">
+                    <h2 className='text-xl font-bold text-gray-900 dark:text-white truncate'>{title}</h2>
+                </div>
+            </div>
+        </Link>
+    );
 }
 
 export default PostCard;

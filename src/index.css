@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #E0F7FA 0%, #F9EBD7 100%);
+    min-height: 100vh; /* Ensures the background covers the full height */
+    color: #333; /* Optional: Change text color for better readability */
+}

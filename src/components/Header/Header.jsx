@@ -5,9 +5,10 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 function Header() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const authStatus = useSelector((state) => state.auth.status);
   const navigate = useNavigate();
+  
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   const navItems = [
     { name: 'Home', slug: '/', active: true },
@@ -17,44 +18,30 @@ function Header() {
     { name: 'Add Post', slug: '/add-post', active: authStatus },
   ];
 
+  const toggleDarkMode = () => {
+    setIsDarkMode(!isDarkMode);
+    document.documentElement.classList.toggle('dark');
+  };
+
   return (
-    <header className="bg-gray-800 py-4 shadow-md">
+    <header className={`py-4 shadow-md ${isDarkMode ? 'bg-gray-900' : 'bg-gray-50'} transition-colors duration-300`}>
       <Container>
         <nav className="flex items-center justify-between">
           <div className="mr-4">
             <Link to="/">
-              <Logo width="100px" />
+              <Logo width="120px" />
             </Link>
           </div>
-
-          {/* Hamburger Button for Mobile */}
-          <button
-            className="text-white lg:hidden"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M4 6h16M4 12h16M4 18h16"
-              ></path>
-            </svg>
-          </button>
-
-          {/* Desktop Navigation */}
-          <ul className="hidden lg:flex space-x-4 ml-auto">
+          <ul className="flex space-x-4 ml-auto">
             {navItems.map((item) =>
               item.active ? (
                 <li key={item.name}>
                   <button
-                    className="text-white hover:text-gray-300 transition duration-300 px-4 py-2 rounded"
+                    className={`text-base font-semibold px-5 py-2 rounded-lg transition duration-300 ${
+                      isDarkMode
+                        ? 'bg-gray-800 text-gray-200 hover:bg-gray-700 hover:text-gray-400'
+                        : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+                    }`}
                     onClick={() => navigate(item.slug)}
                   >
                     {item.name}
@@ -67,33 +54,19 @@ function Header() {
                 <LogoutBtn />
               </li>
             )}
+            <li>
+              <button
+                className={`px-5 py-2 rounded-full border text-base font-semibold transition duration-300 ${
+                  isDarkMode
+                    ? 'border-gray-300 text-gray-200 hover:bg-gray-700 hover:border-gray-500'
+                    : 'border-gray-800 text-gray-800 hover:bg-gray-300'
+                }`}
+                onClick={toggleDarkMode}
+              >
+                {isDarkMode ? 'Light Mode' : 'Dark Mode'}
+              </button>
+            </li>
           </ul>
-
-          {/* Mobile Navigation */}
-          {isMobileMenuOpen && (
-            <ul className="lg:hidden absolute top-16 left-0 w-full bg-gray-800 p-4 space-y-4">
-              {navItems.map((item) =>
-                item.active ? (
-                  <li key={item.name}>
-                    <button
-                      className="block w-full text-white hover:text-gray-300 transition duration-300 px-4 py-2 rounded"
-                      onClick={() => {
-                        navigate(item.slug);
-                        setIsMobileMenuOpen(false); // Close menu after navigation
-                      }}
-                    >
-                      {item.name}
-                    </button>
-                  </li>
-                ) : null
-              )}
-              {authStatus && (
-                <li>
-                  <LogoutBtn />
-                </li>
-              )}
-            </ul>
-          )}
         </nav>
       </Container>
     </header>

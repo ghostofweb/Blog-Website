@@ -11,40 +11,52 @@ function Login() {
     const dispatch = useDispatch();
     const { register, handleSubmit } = useForm();
     const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false); // State to manage loading
 
     const login = async (data) => {
         setError("");
+        setLoading(true); // Start loading
         try {
             const session = await authService.login(data);
             if (session) {
                 const userData = await authService.getCurrentUser();
                 if (userData) {
-                    console.log(userData); // Check the userData structure
                     dispatch(authLogin(userData));
                 }
                 navigate("/");
             }
         } catch (error) {
-            setError(error.message); // Display specific error messages from AuthService
+            setError(error.message);
+        } finally {
+            setLoading(false); // End loading
         }
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-200">
-            <div className="mx-auto w-full max-w-lg bg-white rounded-xl p-10 border border-gray-300 shadow-md">
+        <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-300">
+            <div className="w-full max-w-lg mx-auto bg-white dark:bg-gray-800 rounded-lg p-8 border border-gray-300 dark:border-gray-700 shadow-lg transition-colors duration-300">
                 <div className="mb-4 flex justify-center">
-                    <span className="inline-block w-full max-w-[100px]">
-                        <Logo width="100%" />
-                    </span>
+                    <Logo width="100%" />
                 </div>
-                <h2 className="text-center text-2xl font-bold">Welcome back!</h2>
-                <p className="mt-2 text-center text-base text-gray-600">
+                <h2 className="text-3xl font-bold text-center text-gray-800 dark:text-gray-200">
+                    Welcome back!
+                </h2>
+                <p className="mt-2 text-center text-base text-gray-600 dark:text-gray-400">
                     Don't have an account?&nbsp;
-                    <Link to="/signup" className="font-medium text-blue-500 hover:underline">
+                    <Link
+                        to="/signup"
+                        className="font-medium text-blue-500 dark:text-blue-400 hover:underline"
+                    >
                         Sign up
                     </Link>
                 </p>
-                {error && <p className="text-red-600 mt-4 text-center">{error}</p>}
+                {error && (
+                    <p className="text-red-600 dark:text-red-400 mt-4 text-center">{error}</p>
+                )}
+                
+                {loading && (
+                    <p className="text-blue-500 dark:text-blue-400 mt-4 text-center">Logging in...</p>
+                )}
 
                 <form onSubmit={handleSubmit(login)}>
                     <div className='space-y-5'>
@@ -53,15 +65,21 @@ function Login() {
                             placeholder="Enter your email"
                             type="email"
                             {...register("email", { required: true })}
+                            className="bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-300"
                         />
                         <Input
                             label="Password: "
                             type="password"
                             placeholder="Enter your password"
                             {...register("password", { required: true })}
+                            className="bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-300"
                         />
-                        <Button type="submit" className="w-full bg-blue-500 hover:bg-blue-600 text-white">
-                            Sign In
+                        <Button
+                            type="submit"
+                            className={`w-full bg-blue-500 hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full transition-all duration-300 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            disabled={loading} // Disable button while loading
+                        >
+                            {loading ? 'Signing In...' : 'Sign In'}
                         </Button>
                     </div>
                 </form>

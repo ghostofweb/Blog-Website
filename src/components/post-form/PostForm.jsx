@@ -18,20 +18,18 @@ export default function PostForm({ post }) {
     const navigate = useNavigate();
     const userData = useSelector((state) => state.auth.userData);
 
-    // Check if userData is valid before allowing form submission
     const submit = async (data) => {
         if (!userData || !userData.$id) {
             console.error('User data is not available');
-            return; // Stop execution if userData is not valid
+            return;
         }
 
         const postData = {
             ...data,
-            userId: userData.$id, // Ensure userId is included in the post data
+            userId: userData.$id,
         };
 
         if (post) {
-            // Update existing post logic
             const file = data.image[0] ? await appwriteService.uploadFile(data.image[0]) : null;
 
             if (file) {
@@ -41,7 +39,7 @@ export default function PostForm({ post }) {
             try {
                 const dbPost = await appwriteService.updatePost(post.$id, {
                     ...postData,
-                    featuredImage: file ? file.$id : post.featuredImage, // Keep old image if no new image is uploaded
+                    featuredImage: file ? file.$id : post.featuredImage,
                 });
 
                 if (dbPost) {
@@ -51,15 +49,14 @@ export default function PostForm({ post }) {
                 console.error('Error updating post:', error);
             }
         } else {
-            // Logic for creating a new post
             try {
                 const file = data.image[0] ? await appwriteService.uploadFile(data.image[0]) : null;
 
                 if (file) {
-                    postData.featuredImage = file.$id; // Assign the uploaded file ID
+                    postData.featuredImage = file.$id;
                 }
 
-                const dbPost = await appwriteService.createPost(data.slug, postData); // Ensure slug and postData are passed correctly
+                const dbPost = await appwriteService.createPost(data.slug, postData);
 
                 if (dbPost) {
                     navigate(`/post/${dbPost.$id}`);
@@ -91,24 +88,23 @@ export default function PostForm({ post }) {
         return () => subscription.unsubscribe();
     }, [watch, slugTransform, setValue]);
 
-    // Conditional rendering for the form based on userData
     if (!userData || !userData.$id) {
-        return <div>User is not authenticated. Please log in.</div>;
+        return <div className="text-center p-4">User is not authenticated. Please log in.</div>;
     }
 
     return (
-        <form onSubmit={handleSubmit(submit)} className="flex flex-wrap">
+        <form onSubmit={handleSubmit(submit)} className="flex flex-wrap p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md">
             <div className="w-2/3 px-2">
                 <Input
-                    label="Title :"
+                    label={<span className="text-black dark:text-white">Title :</span>}
                     placeholder="Title"
                     className="mb-4"
                     {...register("title", { required: true })}
                 />
-                {errors.title && <span className="text-red-500">Title is required.</span>} {/* Title error message */}
+                {errors.title && <span className="text-red-500 dark:text-red-300">Title is required.</span>}
                 
                 <Input
-                    label="Slug :"
+                    label={<span className="text-black dark:text-white">Slug :</span>}
                     placeholder="Slug"
                     className="mb-4"
                     {...register("slug", { required: true })}
@@ -116,20 +112,20 @@ export default function PostForm({ post }) {
                         setValue("slug", slugTransform(e.currentTarget.value), { shouldValidate: true });
                     }}
                 />
-                {errors.slug && <span className="text-red-500">Slug is required.</span>} {/* Slug error message */}
-
-                <RTE label="Content :" name="content" control={control} defaultValue={getValues("content")} />
-                {errors.content && <span className="text-red-500">Content is required.</span>} {/* Content error message */}
+                {errors.slug && <span className="text-red-500 dark:text-red-300">Slug is required.</span>}
+                
+                <RTE label={<span className="text-black dark:text-white">Content :</span>} name="content" control={control} defaultValue={getValues("content")} />
+                {errors.content && <span className="text-red-500 dark:text-red-300">Content is required.</span>}
             </div>
             <div className="w-1/3 px-2">
                 <Input
-                    label="Featured Image :"
+                    label={<span className="text-black dark:text-white">Featured Image :</span>}
                     type="file"
                     className="mb-4"
                     accept="image/png, image/jpg, image/jpeg, image/gif"
                     {...register("image", { required: !post })}
                 />
-                {errors.image && <span className="text-red-500">Featured image is required.</span>} {/* Featured image error message */}
+                {errors.image && <span className="text-red-500 dark:text-red-300">Featured image is required.</span>}
                 
                 {post && (
                     <div className="w-full mb-4">
@@ -142,11 +138,10 @@ export default function PostForm({ post }) {
                 )}
                 <Select
                     options={["active", "inactive"]}
-                    label="Status"
+                    label={<span className="text-black dark:text-white">Status</span>}
                     className="mb-4"
                     {...register("status", { required: true })}
                 />
-                {/* Button Container */}
                 <div className="mt-4">
                     <Button type="submit" bgColor={post ? "bg-green-500" : "bg-blue-500"} className="w-full">
                         {post ? "Update" : "Submit"}
