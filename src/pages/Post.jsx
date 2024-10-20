@@ -14,7 +14,8 @@ export default function Post() {
     const { slug } = useParams();
     const navigate = useNavigate();
     const userData = useSelector((state) => state.auth.userData);
-
+    
+    // Check if the logged-in user is the author of the post
     const isAuthor = post && userData ? post.userId === userData.$id : false;
 
     useEffect(() => {
@@ -22,19 +23,23 @@ export default function Post() {
             try {
                 if (slug) {
                     const fetchedPost = await appwriteService.getPost(slug);
-                    if (fetchedPost) {
-                        setPost(fetchedPost);
-                        const user = await authService.getCurrentUser();
-                        if (user) {
-                            setAuthorName(user.name);
-                        }
+                    
+                    if (!fetchedPost) {
+                        throw new Error("Post not found");
+                    }
+
+                    setPost(fetchedPost);
+                    const user = await authService.getUserById(fetchedPost.userId);
+                    if (user) {
+                        setAuthorName(user.name);
                     } else {
-                        navigate("/");
+                        setAuthorName("Unknown User"); // Fallback if user not found
                     }
                 } else {
-                    navigate("/");
+                    throw new Error("No slug provided");
                 }
             } catch (err) {
+                console.error("Error fetching post:", err);
                 setError("Failed to fetch post. Please try again later.");
             } finally {
                 setLoading(false);
@@ -42,14 +47,14 @@ export default function Post() {
         };
 
         fetchPost();
-    }, [slug, navigate]);
+    }, [slug]);
 
     const deletePost = () => {
         if (window.confirm("Are you sure you want to delete this post?")) {
             appwriteService.deletePost(post.$id).then((status) => {
                 if (status) {
                     appwriteService.deleteFile(post.featuredImage);
-                    navigate("/");
+                    navigate("/"); // Redirect after successful deletion
                 } else {
                     alert("Failed to delete post. Please try again.");
                 }
@@ -57,14 +62,17 @@ export default function Post() {
         }
     };
 
+    // Loading state
     if (loading) {
         return <div className="text-center py-8">Loading...</div>;
     }
 
+    // Error state
     if (error) {
         return <div className="text-center py-8 text-red-500">{error}</div>;
     }
 
+    // Post display
     return post ? (
         <div className="py-8">
             <Container>
@@ -77,9 +85,9 @@ export default function Post() {
                         />
                     </div>
                     <div className="md:w-2/3">
-                        <h1 className="text-3xl font-bold mb-2 text-gray-800 ">{post.title}</h1>
+                        <h1 className="text-3xl font-bold mb-2 text-gray-800">{post.title}</h1>
                         <p className="text-sm text-gray-600 mb-4">
-                            Created by: {authorName || 'Unknown User'}
+                            Created by: {authorName || "Unknown User"}
                         </p>
                         <div className="browser-css mb-4">
                             {parse(post.content)}
@@ -100,5 +108,7 @@ export default function Post() {
                 </div>
             </Container>
         </div>
-    ) : null;
+    ) : (
+        <div className="text-center py-8">Post not found.</div> // Fallback if post is null
+    );
 }

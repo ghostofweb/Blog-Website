@@ -5,26 +5,23 @@ export class AuthService {
     client = new Client();
     account;
 
-    constructor(){
+    constructor() {
         this.client
             .setEndpoint(conf.appwriteURL)
             .setProject(conf.appwriteProjectId);
-        this.account = new Account(this.client); 
+        this.account = new Account(this.client);
     }
 
     async createAccount({ email, password, name }) {
         try {
             const userAccount = await this.account.create(ID.unique(), email, password, name);
             if (userAccount) {
-                // Call another method if he creates account successfully
-                // then login
                 return this.login({ email, password });
             } else {
                 return userAccount;
             }
         } catch (error) {
-            // Handle specific errors
-            if (error.code === 409) { // Assuming 409 is the code for conflict (email exists)
+            if (error.code === 409) {
                 throw new Error("Email already exists");
             }
             console.error("Error during account creation:", error);
@@ -36,8 +33,7 @@ export class AuthService {
         try {
             return await this.account.createEmailPasswordSession(email, password);
         } catch (error) {
-            // Handle specific errors
-            if (error.code === 401) { // Assuming 401 is the code for unauthorized (invalid credentials)
+            if (error.code === 401) {
                 throw new Error("Invalid credentials");
             }
             console.error("Error during login:", error);
@@ -58,6 +54,16 @@ export class AuthService {
             await this.account.deleteSessions();
         } catch (error) {
             console.error("Error during logout:", error);
+        }
+    }
+
+    // New method to get user by ID
+    async getUserById(userId) {
+        try {
+            return await this.account.get(userId); // Make sure the method exists
+        } catch (error) {
+            console.log("Error fetching user by ID:", error);
+            return null; // Return null if user not found or error occurs
         }
     }
 }
