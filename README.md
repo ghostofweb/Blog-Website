@@ -11,7 +11,7 @@ Saffron Stories is a blog website where users can sign in, create, edit, and del
 
 ## Tech Stack
 
-### Frontend
+### Frontend  
 
 - **React.js**: JavaScript library for building user interfaces.
 - **@reduxjs/toolkit** and **react-redux**: For state management.
