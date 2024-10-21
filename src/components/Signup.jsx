@@ -16,7 +16,8 @@ function Signup() {
     const { register, handleSubmit, formState: { errors } } = useForm();
 
     // Regular expression for name validation
-    const nameRegex = /^[a-zA-Z0-9_]+$/; // Allow letters, numbers, and underscores
+    const nameRegex = /^[a-zA-Z0-9_ ]+$/;
+ // Allow letters, numbers, and underscores
     const badWords = ['badword1', 'badword2']; // Add your bad words here
 
     const validateName = (name) => {
