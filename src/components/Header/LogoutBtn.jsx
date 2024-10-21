@@ -2,6 +2,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import authService from '../../appwrite/auth';
 import { logout } from '../../store/authSlice';
+import { Navigate } from 'react-router-dom';
 
 function LogoutBtn() {
   const dispatch = useDispatch();
@@ -9,6 +10,7 @@ function LogoutBtn() {
   const handleLogout = () => {
     authService.logout().then(() => {
       dispatch(logout());
+      Navigate("/")
     });
   };
 

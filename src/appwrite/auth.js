@@ -45,7 +45,12 @@ export class AuthService {
         try {
             return await this.account.get();
         } catch (error) {
+            if (error.code === 401) {
+                // Treat as guest if not authenticated
+                return null; // Return null for guests
+            }
             console.error("Error fetching current user:", error);
+            return null; // Also return null for other errors
         }
     }
 
@@ -57,10 +62,11 @@ export class AuthService {
         }
     }
 
-    // New method to get user by ID
+    // Fallback user details using current user data
     async getUserById(userId) {
         try {
-            return await this.account.get(userId); // Make sure the method exists
+            const user = await this.account.get(); // This will give you the current user's details if authenticated
+            return user ? user : null; // Return user details or null for guests
         } catch (error) {
             console.log("Error fetching user by ID:", error);
             return null; // Return null if user not found or error occurs

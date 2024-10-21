@@ -5,6 +5,7 @@ import { Button, Input, Logo } from "./index";
 import { useDispatch } from "react-redux";
 import authService from "../appwrite/auth";
 import { useForm } from "react-hook-form";
+import { EyeIcon, EyeOffIcon } from '@heroicons/react/outline'; // Make sure to install heroicons
 
 function Login() {
     const navigate = useNavigate();
@@ -12,6 +13,7 @@ function Login() {
     const { register, handleSubmit } = useForm();
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false); // State to manage loading
+    const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
 
     const login = async (data) => {
         setError("");
@@ -67,13 +69,22 @@ function Login() {
                             {...register("email", { required: true })}
                             className="bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-300"
                         />
-                        <Input
-                            label="Password: "
-                            type="password"
-                            placeholder="Enter your password"
-                            {...register("password", { required: true })}
-                            className="bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-300"
-                        />
+                        <div className="relative">
+                            <Input
+                                label="Password: "
+                                type={showPassword ? 'text' : 'password'} // Toggle password visibility
+                                placeholder="Enter your password"
+                                {...register("password", { required: true })}
+                                className="bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-300 pr-10" // Added padding for the icon
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)} // Toggle visibility
+                                className="absolute right-3 top-12 transform -translate-y-1/2 text-gray-500" // Centered vertically
+                            >
+                                {showPassword ? <EyeOffIcon className="w-5 h-5" /> : <EyeIcon className="w-5 h-5" />}
+                            </button>
+                        </div>
                         <Button
                             type="submit"
                             className={`w-full bg-blue-500 hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full transition-all duration-300 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}

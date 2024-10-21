@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Logo, LogoutBtn } from '../index'; // Ensure this path is correct
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import authService from '../../appwrite/auth'; // Adjust the import path to your AuthService
 
 function Header() {
   const authStatus = useSelector((state) => state.auth.status);
+  const [user, setUser] = useState(null);
+  const [greeting, setGreeting] = useState('');
   const navigate = useNavigate();
   
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -23,14 +26,39 @@ function Header() {
     document.documentElement.classList.toggle('dark');
   };
 
+  // Fetch current user and set greeting
+  useEffect(() => {
+    const fetchUser = async () => {
+      const currentUser = await authService.getCurrentUser();
+      if (currentUser) {
+        setUser(currentUser);
+        setGreeting(getGreeting());
+      }
+    };
+    
+    fetchUser();
+  }, [authStatus]);
+
+  const getGreeting = () => {
+    const hours = new Date().getHours();
+    if (hours < 12) return 'Good Morning';
+    if (hours < 18) return 'Good Afternoon';
+    return 'Good Evening';
+  };
+
   return (
     <header className={`py-4 shadow-md ${isDarkMode ? 'bg-gray-900' : 'bg-gray-50'} transition-colors duration-300`}>
       <Container>
         <nav className="flex items-center justify-between">
-          <div className="mr-4">
+          <div className="flex items-center">
             <Link to="/">
               <Logo width="120px" />
             </Link>
+            {authStatus && user && (
+              <span className={`ml-4 text-base font-semibold ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
+                {`${greeting}, ${user.name}`}
+              </span>
+            )}
           </div>
           <ul className="flex space-x-4 ml-auto">
             {navItems.map((item) =>

@@ -27,13 +27,15 @@ export default function Post() {
                     if (!fetchedPost) {
                         throw new Error("Post not found");
                     }
-
+    
                     setPost(fetchedPost);
-                    const user = await authService.getUserById(fetchedPost.userId);
-                    if (user) {
-                        setAuthorName(user.name);
+    
+                    // Fetch the author only if the post has a userId
+                    if (fetchedPost.userId) {
+                        const user = await authService.getUserById(fetchedPost.userId);
+                        setAuthorName(user ? user.name : "Unknown User");
                     } else {
-                        setAuthorName("Unknown User"); // Fallback if user not found
+                        setAuthorName("Unknown User");
                     }
                 } else {
                     throw new Error("No slug provided");
@@ -45,9 +47,10 @@ export default function Post() {
                 setLoading(false);
             }
         };
-
+    
         fetchPost();
     }, [slug]);
+    
 
     const deletePost = () => {
         if (window.confirm("Are you sure you want to delete this post?")) {
@@ -92,7 +95,9 @@ export default function Post() {
                         <div className="browser-css mb-4">
                             {parse(post.content)}
                         </div>
-                        {isAuthor && (
+
+                        {/* Show edit and delete options only if the user is the author */}
+                        {isAuthor ? (
                             <div className="mt-4 flex space-x-3">
                                 <Link to={`/edit-post/${post.$id}`}>
                                     <Button bgColor="bg-green-500 dark:bg-green-700">
@@ -102,6 +107,10 @@ export default function Post() {
                                 <Button bgColor="bg-red-500 dark:bg-red-700" onClick={deletePost}>
                                     Delete
                                 </Button>
+                            </div>
+                        ) : (
+                            <div className="mt-4 text-gray-600">
+                                Viewing as guest. Login to edit or delete posts.
                             </div>
                         )}
                     </div>
